@@ -3,9 +3,7 @@ services:
   vpn:
     build: vpn
     volumes:
-      - type: volume
-        source: ~/openvpn
-        target: /mnt/openvpn
+      - ~/openvpn:/mnt/openvpn
     cap_add:
       - NET_ADMIN
     devices:
