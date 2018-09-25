@@ -3,8 +3,14 @@ services:
   vpn:
     build: vpn
     volumes:
-      - ~/openvpn:/mnt/openvpn
+      - openvpn:/mnt/openvpn
     cap_add:
       - NET_ADMIN
     devices:
       - "/dev/net/tun"
+
+volumes:
+  openvpn:
+    driver: local-persist
+    driver_opts:
+      mountpoint: ~/openvpn/
