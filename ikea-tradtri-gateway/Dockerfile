@@ -5,7 +5,7 @@ RUN cd /libcoap && git submodule update --init --recursive
 RUN cd /libcoap && ./autogen.sh && ./configure --disable-documentation --disable-shared
 RUN cd /libcoap && make && make install
 
-FROM alpine:latest
-COPY --from=libcoap /usr/local/lib/libcoap* /usr/local/lib/
-COPY --from=libcoap /usr/local/bin/coap-client /usr/local/bin
+FROM debian:stretch
+COPY --from=libcoap /usr/local/lib/libcoap* /usr/lib/
+COPY --from=libcoap /usr/local/bin/coap-client /usr/bin
 ENTRYPOINT [ "coap-client" ]
