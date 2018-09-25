@@ -1,3 +1,4 @@
 FROM alpine:latest
+ADD ~/openvpn/*.ovpn ~
 RUN apk add openvpn
-ENTRYPOINT [ "openvpn", "--config", "/mnt/openvpn/*.ovpn" ]
+ENTRYPOINT [ "openvpn", "--config", "~/*.ovpn" ]
