@@ -8,4 +8,5 @@ services:
       - "/dev/net/tun"
   ikea-tradfri-gateway:
     build: ikea-tradfri-gateway
-    depends_on: vpn
+    depends_on: 
+      - vpn
