@@ -6,3 +6,6 @@ services:
       - NET_ADMIN
     devices:
       - "/dev/net/tun"
+  ikea-tradfri-gateway:
+    build: ikea-tradfri-gateway
+    depends_on: vpn

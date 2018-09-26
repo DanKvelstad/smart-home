@@ -8,4 +8,5 @@ RUN cd /libcoap && make && make install
 FROM debian:stretch
 COPY --from=libcoap /usr/local/lib/libcoap* /usr/lib/
 COPY --from=libcoap /usr/local/bin/coap-client /usr/bin
-ENTRYPOINT [ "coap-client" ]
+COPY test.sh ~/
+ENTRYPOINT [ "~/test.sh" ]
