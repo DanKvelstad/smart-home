@@ -2,6 +2,8 @@ version: '3'
 services:
   vpn:
     build: vpn
+    volumes:
+      - secrets:/secrets
     cap_add:
       - NET_ADMIN
     devices:
@@ -10,3 +12,6 @@ services:
     build: ikea-tradfri-gateway
     depends_on: 
       - vpn
+volumes:
+  secrets:
+    external: true
