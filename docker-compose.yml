@@ -8,10 +8,12 @@ services:
       - NET_ADMIN
     devices:
       - "/dev/net/tun"
+    network_mode: "host"
   ikea-tradfri-gateway:
     build: ikea-tradfri-gateway
     depends_on: 
       - vpn
+    network_mode: "service:vpn"
 volumes:
   secrets:
     external: true
