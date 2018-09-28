@@ -6,4 +6,7 @@ Make sure that a volume called "secrets" is available and that it contains the "
 
 Manually starting the vpn:
 * sudo iptables -w -A INPUT -p udp -s 192.168.1.0/22 -j ACCEPT
-* docker run -d -v secrets:/secrets --net=host --device=/dev/net/tun --cap-add=NET_ADMIN --rm --name=vpn vpn
+* sudo iptables -w -D INPUT -p udp -s 192.168.1.0/22 -j ACCEPT
+
+* sudo iptables -I DOCKER-USER -s 192.168.0.0/22 -j ACCEPT
+* docker run -dv secrets:/secrets --rm --device=/dev/net/tun --cap-add=NET_ADMIN --name=vpn vpn
