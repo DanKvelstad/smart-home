@@ -2,73 +2,34 @@
 #include <string>
 #include <string.h>
 #include <iostream>
+#include <fstream>
 #include <vector>
-#include <thread>
-#include <coap/coap.h>
+#include "gateway.h"
 
-int main_cpp(const std::vector<std::string>& args)
+int main_cpp(std::vector<std::string>& args)
 {
 
-    //coap_startup();
-
-    coap_address_t dst;
-    if (resolve_address("192.168.1.4", "5683", &dst) < 0) {
-        std::cout << "failed to resolve address\n";
-        return EXIT_FAILURE;
-    }
-
-    auto ctx(coap_dtls_new_context(nullptr));
-    if(!ctx)
+    std::string username, key;
     {
-        std::cout << "failed to create new context\n";
-        return EXIT_FAILURE;
+
+		std::ifstream ifstream("/secrets/gateway");
+		std::string gateway_key((std::istreambuf_iterator<char>(ifstream)),
+                                 std::istreambuf_iterator<char>());
+		std::cout << "factory user of the gateway\n"
+                  << "  username: Client_identity\n"
+                  << "  key:      " << gateway_key << "\n";
+        
+		auto connection(connect(gateway_key));
+        username = connection.first;
+        key      = connection.second;
+        
+		std::cout << "registered new user with the gateway\n"
+                  << "  username: " << username  << "\n"
+                  << "  key:      " << key << "\n";
+
     }
 
-    auto session(coap_dtls_new_session(ctx, nullptr, &dst));
-    if (!session)
-     {
-        std::cout << "failed to create new client session\n";
-        return EXIT_FAILURE;
-    }
-
-    coap_register_response_handler(
-        ctx,
-        [](auto, auto, auto, coap_pdu_t *received, auto)
-        {
-            coap_show_pdu(LOG_INFO, received);
-        }
-    );
-    
-    auto pdu(
-        coap_pdu_init(
-            COAP_MESSAGE_CON,
-            COAP_REQUEST_GET,
-            0 /* message id */,
-            coap_session_max_pdu_size(session)
-        )
-    );
-    if (!pdu) 
-    {
-        std::cout << "failed to init PDU\n";
-        return EXIT_FAILURE;
-    }
-
-    coap_add_option(
-        pdu,
-        COAP_OPTION_URI_PATH,
-        5,
-        reinterpret_cast<const uint8_t *>("hello")
-    );
-
-    coap_send(session, pdu);
-
-    coap_run_once(ctx, 0);
-
-    coap_session_release(session);
-    coap_free_context(ctx);
-    coap_cleanup();
-
-    return EXIT_SUCCESS;
+	return EXIT_SUCCESS;
 
 }
 
